@@ -1,34 +1,33 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: postgresql-operator
+  name: cloudnative-pg
   namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  annotations:
+    argocd.argoproj.io/sync-wave: "-10"
 spec:
   project: default
-  
   source:
-    chart: postgresql
-    repoURL: https://charts.bitnami.com/bitnami
-    targetRevision: 15.5.32
+    repoURL: https://cloudnative-pg.github.io/charts
+    chart: cloudnative-pg
+    targetRevision: 0.22.0
     helm:
-      releaseName: postgres
-      parameters:
-        - name: auth.username
-          value: postgres
-        - name: auth.password
-          value: postgres
-        - name: auth.database
-          value: flui_dev
-        - name: primary.persistence.size
-          value: 2Gi
-  
+      releaseName: cloudnative-pg
   destination:
     server: https://kubernetes.default.svc
-    namespace: flui-back-dev 
-  
+    namespace: cnpg-system
   syncPolicy:
     automated:
       prune: true
       selfHeal: true
     syncOptions:
       - CreateNamespace=true
+      - ServerSideApply=true
+    retry:
+      limit: 5
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 3m
