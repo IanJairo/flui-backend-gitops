@@ -4,7 +4,7 @@ metadata:
   name: postgres-cluster-prod
   namespace: flui-prod
 spec:
-  instances: 3
+  instances: 3 
   
   storage:
     size: 10Gi
@@ -12,23 +12,20 @@ spec:
   
   bootstrap:
     initdb:
-      database: flui_prod
-      owner: flui
+      database: flui_prod 
+      owner: flui         
       secret:
-        name: postgres-superuser-prod
+        name: postgres-superuser
   
   postgresql:
     parameters:
       max_connections: "200"
       shared_buffers: "256MB"
-      effective_cache_size: "1GB"
       work_mem: "4MB"
+      maintenance_work_mem: "64MB"
   
   monitoring:
     enablePodMonitor: false
-  
-  # Configurações de alta disponibilidade
-  primaryUpdateStrategy: unsupervised
   
   resources:
     requests:
