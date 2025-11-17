@@ -1,0 +1,39 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: postgres-cluster-prod
+  namespace: flui-prod
+spec:
+  instances: 3
+  
+  storage:
+    size: 10Gi
+    storageClass: hostpath
+  
+  bootstrap:
+    initdb:
+      database: flui_prod
+      owner: flui
+      secret:
+        name: postgres-superuser-prod
+  
+  postgresql:
+    parameters:
+      max_connections: "200"
+      shared_buffers: "256MB"
+      effective_cache_size: "1GB"
+      work_mem: "4MB"
+  
+  monitoring:
+    enablePodMonitor: false
+  
+  # Configurações de alta disponibilidade
+  primaryUpdateStrategy: unsupervised
+  
+  resources:
+    requests:
+      memory: "512Mi"
+      cpu: "500m"
+    limits:
+      memory: "1Gi"
+      cpu: "1000m"
