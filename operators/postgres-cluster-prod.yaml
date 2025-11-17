@@ -15,7 +15,7 @@ spec:
       database: flui_prod 
       owner: flui         
       secret:
-        name: postgres-superuser
+        name: postgres-superuser-prod
   
   postgresql:
     parameters:
@@ -23,6 +23,8 @@ spec:
       shared_buffers: "256MB"
       work_mem: "4MB"
       maintenance_work_mem: "64MB"
+    pg_hba:
+      - host all all all scram-sha-256
   
   monitoring:
     enablePodMonitor: false
