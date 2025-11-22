@@ -1,21 +1,19 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: flui-backend-prod
+  name: postgres-cluster-prod
   namespace: argocd
   finalizers:
     - resources-finalizer.argocd.argoproj.io
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
 spec:
   project: default
   
   source:
-    repoURL: https://github.com/IanJairo/flui-backend.git
+    repoURL: https://github.com/IanJairo/flui-backend-gitops.git
     targetRevision: main
-    path: helm
-    helm:
-      releaseName: flui-backend-prod
-      valueFiles:
-        - values-prod.yaml
+    path: manifests/postgres-prod
   
   destination:
     server: https://kubernetes.default.svc
@@ -27,3 +25,9 @@ spec:
       selfHeal: true
     syncOptions:
       - CreateNamespace=true
+    retry:
+      limit: 5
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 3m
