@@ -15,7 +15,7 @@ spec:
       database: flui_prod 
       owner: flui         
       secret:
-        name: postgres-superuser-prod
+        name: postgres-superuser
   
   postgresql:
     parameters:
